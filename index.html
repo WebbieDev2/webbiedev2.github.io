@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Webbie</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    input, textarea, button {
+      width: 100%;
+      max-width: 500px;
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    input, textarea {
+      background: #2e2e3e;
+      color: #fff;
+    }
+    button {
+      background: #00b894;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #019875;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📢 Webbie WebHook Sender</h1>
+
+  <input type="text" id="webhook" placeholder="Webhook URL">
+  <input type="text" id="title" placeholder="Embed Title">
+  <textarea id="description" rows="5" placeholder="Embed Description"></textarea>
+  <input type="color" id="color" value="#00b894">
+  <button onclick="sendAnnouncement()">Send Announcement</button>
+
+  <script>
+    async function sendAnnouncement() {
+      const webhook = document.getElementById("webhook").value;
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const color = parseInt(document.getElementById("color").value.replace("#", "0x"));
+
+      const data = {
+        embeds: [{
+          title: title,
+          description: description,
+          color: color,
+          footer: {
+            text: "Fra Rachi Announcements"
+          },
+          timestamp: new Date().toISOString()
+        }]
+      };
+
+      try {
+        const response = await fetch(webhook, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.status === 204) {
+          alert("✅ Announcement sent!");
+        } else {
+          alert("❌ Failed to send: " + response.status);
+        }
+      } catch (error) {
+        alert("❌ Error: " + error);
+      }
+    }
+  </script>
+
+</body>
+</html>
